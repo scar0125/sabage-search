@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+                <div class="card-header">{{ isset($authgroup) ? ucwords($authgroup) : ""}} {{ __('Reset Password') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,8 +13,12 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
+                    
+                    @isset($authgroup)
+                    <form method="POST" action="{{ route("$authgroup.password.email") }}">
+                    @else
                     <form method="POST" action="{{ route('password.email') }}">
+                    @endisset
                         @csrf
 
                         <div class="form-group row">
