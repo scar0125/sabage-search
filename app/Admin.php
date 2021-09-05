@@ -21,7 +21,7 @@ class Admin extends Authenticatable
         'password', 'remember_token',
     ];
     
-    // ドフォルトのreset passwordをオーバーライド
+    // デフォルトのreset passwordをオーバーライド
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new AdminResetPassword($token));

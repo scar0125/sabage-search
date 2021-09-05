@@ -13,11 +13,10 @@
 
 //検索画面
 Route::get('/', 'PostController@index');
-Route::get('/search', 'PostController@search');
+Route::get('/result', 'PostController@search');
 
 //ログイン
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 
