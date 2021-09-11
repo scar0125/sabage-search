@@ -11,27 +11,39 @@
 |
 */
 
-//検索画面
+//トップページ
 Route::get('/', 'PostController@index');
+
+//検索結果
 Route::get('/result', 'PostController@search');
+
+//投稿詳細画面
+Route::get('/posts/{post}', 'PostController@show');
+
+
+//投稿管理(管理者ログイン必須)
+Route::get('/create', 'PostController@create')->middleware('auth:admin');
+Route::get('/posts/{post}/edit', 'PostController@edit')->middleware('auth:admin');
+Route::put('/posts/{post}', 'PostController@update')->middleware('auth:admin');
+Route::delete('/posts/{post}', 'PostController@delete')->middleware('auth:admin');
+Route::post('/', 'PostController@store')->middleware('auth:admin');
+
 
 //ログイン
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-//管理ログイン
+//管理者ログイン
 Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
 Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
-
 Route::post('/login/admin', 'Auth\LoginController@adminLogin');
 Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
-
 Route::view('/admin', 'admin')->middleware('auth:admin')->name('admin-home');
 
 
 
-//管理ログインパスワードのリセット
+//管理者ログインパスワードのリセット
 Route::get('password/admin/reset', 'Auth\AdminForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
 Route::post('password/admin/email', 'Auth\AdminForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
 Route::get('password/admin/reset/{token}', 'Auth\AdminResetPasswordController@showResetForm')->name('admin.password.reset');

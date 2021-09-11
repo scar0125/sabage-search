@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,17 @@ class PostController extends Controller
         $prefecture_condition = $request->prefecture_condition;
         //AND・OR条件
         $search_condition = $request->search_condition;
+        
+        //都道府県配列(関東)
+        $prefectures = array(
+            '茨城県'    => '茨城県',
+            '栃木県'    => '栃木県',
+            '群馬県'      => '群馬県',
+            '埼玉県'    => '埼玉県',
+            '千葉県'      => '千葉県',
+            '東京都'      => '東京都',
+            '神奈川県'   => '神奈川県',
+            );
         
         //検索条件が入力された場合
         if(
@@ -209,76 +221,30 @@ class PostController extends Controller
                 }
             }
             
-            
             //prefecture_condition検索
             if(!empty($prefecture_condition)) {
                 //AND検索
                 if($search_condition == 1) {
-                    switch ($prefecture_condition) {
-                        case 0://条件未入力
-                            break;
-                        case 1://茨城県
-                            $posts->where('prefecture', '茨城県');
-                            break;
-                        case 2://栃木県
-                            $posts->where('prefecture', '栃木県');
-                            break;
-                        case 3://群馬県
-                            $posts->where('prefecture', '群馬県');
-                            break;
-                        case 4://埼玉県
-                            $posts->where('prefecture', '埼玉県');
-                            break;
-                        case 5://千葉県
-                            $posts->where('prefecture', '千葉県');
-                            break;
-                        case 6://東京都
-                            $posts->where('prefecture', '東京都');
-                            break;
-                        case 7://神奈川県
-                            $posts->where('prefecture', '神奈川県');
-                            break;
-                    }
+                    $posts->where('prefecture', $prefectures[$prefecture_condition]);
                 }
                 //OR検索
                 elseif($search_condition == 2) {
-                    switch ($prefecture_condition) {
-                        case 0://条件未入力
-                            break;
-                        case 1://茨城県
-                            $posts->orWhere('prefecture', '茨城県');
-                            break;
-                        case 2://栃木県
-                            $posts->orWhere('prefecture', '栃木県');
-                            break;
-                        case 3://群馬県
-                            $posts->orWhere('prefecture', '群馬県');
-                            break;
-                        case 4://埼玉県
-                            $posts->orWhere('prefecture', '埼玉県');
-                            break;
-                        case 5://千葉県
-                            $posts->orWhere('prefecture', '千葉県');
-                            break;
-                        case 6://東京都
-                            $posts->orWhere('prefecture', '東京都');
-                            break;
-                        case 7://神奈川県
-                            $posts->orWhere('prefecture', '神奈川県');
-                            break;
-                    }
+                    $posts->orWhere('prefecture', $prefectures[$prefecture_condition]);
                 }
             }
             
             //view表示
             if(!empty($posts)) {
+                $url = url()->full();//検索結果のurl取得
+                
                 $message = "検索が完了しました。";
                 return view('result')->with([
                     'posts' => $posts->orderBy('updated_at', 'DESC')->paginate(10),
                     'message' => $message,
+                    'url' => $url,
                 ]);
             }
-            //fee条件未入力等
+            //fee条件未入力
             else {
                 $message = "料金条件を選択してください";
                 return view('result')->with('message',$message);
@@ -294,50 +260,102 @@ class PostController extends Controller
     }
     
     
-    //Post一覧の表示
+    //トップページの表示
     public function index(Post $post)
     {
+        //都道府県配列(関東)
+        $prefectures = array(
+            '茨城県'    => '茨城県',
+            '栃木県'    => '栃木県',
+            '群馬県'      => '群馬県',
+            '埼玉県'    => '埼玉県',
+            '千葉県'      => '千葉県',
+            '東京都'      => '東京都',
+            '神奈川県'   => '神奈川県',
+            );
+            
+        //ログイン状態を識別
         $user = Auth::user();
+        
         return view('index')->with([
             'posts' => $post->getPaginateByLimit(),
             'user' => $user,
+            'prefectures' => $prefectures,
             ]);
     }
     
     
+    //特定IDのPost詳細画面表示
     public function show(Post $post)
     {
         return view('show')->with(['post' => $post]);
     }
     
+    
+    //投稿作成画面
     public function create()
     {
-        return view('create');
+        //都道府県配列(関東)
+        $prefectures = array(
+            '茨城県'    => '茨城県',
+            '栃木県'    => '栃木県',
+            '群馬県'      => '群馬県',
+            '埼玉県'    => '埼玉県',
+            '千葉県'      => '千葉県',
+            '東京都'      => '東京都',
+            '神奈川県'   => '神奈川県',
+            );
+        return view('create')->with([
+            'prefectures' => $prefectures,
+            ]);
     }
     
+    
+    //投稿保存
     public function store(Post $post, PostRequest $request)
     {
         $input = $request['post'];
         $post->fill($input)->save();
-        return redirect('/posts/' . $post->id);
+        return redirect('/');
     }
     
+    
+    //投稿編集画面
     public function edit(Post $post)
     {
-        return view('edit')->with(['post' => $post]);
+        //都道府県配列(関東)
+        $prefectures = array(
+            '茨城県'    => '茨城県',
+            '栃木県'    => '栃木県',
+            '群馬県'      => '群馬県',
+            '埼玉県'    => '埼玉県',
+            '千葉県'      => '千葉県',
+            '東京都'      => '東京都',
+            '神奈川県'   => '神奈川県',
+            );
+        return view('edit')->with([
+            'post' => $post,
+            'prefectures' => $prefectures,
+            ]);
     }
     
-    public function update(PostRequest $request, Post $post)
+    
+    //投稿更新
+    public function update(Post $post, PostRequest $request)
     {
         $input_post = $request['post'];
         $post->fill($input_post)->save();
         return redirect('/posts/' . $post->id);
     }
     
-    public function delete(Post $post)
+    
+    //投稿削除
+    public function delete(Post $post, Request $request)
     {
+        $url = $request->url;
         $post->delete();
-        return redirect('/');
+        return redirect($url);//検索結果にリダイレクト
     }
+    
     
 }

@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <title>Blog</title>
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-    </head>
-    
-    <body>
+@extends('layouts.app')
+
+@section('content')
+
         @if (Auth::check())
             <p>User: {{$user->name}}</p>
         @else
@@ -26,7 +20,7 @@
         </div>
         
         <div class="form-group">
-        <label>1人当たりの料金</label>
+        <label>1人あたりの料金</label>
         <input type="text" class="form-control col-md-5" placeholder="3000" name="per_fee" value="{{ old("per_fee")}}">
         <select class="form-control col-md-5" name="per_fee_condition">
             <option selected value="0">選択...</option>
@@ -76,14 +70,10 @@
         <div class="form-group">
         <label>都道府県</label>
         <select class="form-control col-md-5" name="prefecture_condition">
-            <option selected value="0">指定なし</option>
-            <option value="1">茨城県</option>
-            <option value="2">栃木県</option>
-            <option value="3">群馬県</option>
-            <option value="4">埼玉県</option>
-            <option value="5">千葉県</option>
-            <option value="6">東京都</option>
-            <option value="7">神奈川県</option>
+            <option selected value="">指定なし</option>
+            @foreach($prefectures as $key => $value)
+	        <option value="{{ $key }}">{{ $value }}</option>
+            @endforeach
         </select>
         </div>
         
@@ -101,7 +91,11 @@
             <div class="alert alert-primary" role="alert" style="margin-top:50px;">{{ session('flash_message')}}</div>
         @endif
         
-        <!--仮表示：全投稿一覧
+        @if (Auth::guard('admin')->check())
+        <p class='create'>[<a href='/create'>投稿作成</a>]</p>
+        @endif
+        
+        <!--投稿一覧画面仮表示-->
         <div class='posts'>
             @foreach ($posts as $post)
                 <div class='post'>
@@ -120,7 +114,5 @@
         <div class='paginate'>
             {{ $posts->links() }}
         </div>
-        -->
-    
-    </body>
-</html>
+        
+@endsection
