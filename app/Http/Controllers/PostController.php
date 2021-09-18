@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Review;
+use App\User;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,15 +27,7 @@ class PostController extends Controller
         $search_condition = $request->search_condition;
         
         //都道府県配列(関東)
-        $prefectures = array(
-            '茨城県'    => '茨城県',
-            '栃木県'    => '栃木県',
-            '群馬県'      => '群馬県',
-            '埼玉県'    => '埼玉県',
-            '千葉県'      => '千葉県',
-            '東京都'      => '東京都',
-            '神奈川県'   => '神奈川県',
-            );
+        $prefs = config('pref');
         
         //検索条件が入力された場合
         if(
@@ -225,11 +219,11 @@ class PostController extends Controller
             if(!empty($prefecture_condition)) {
                 //AND検索
                 if($search_condition == 1) {
-                    $posts->where('prefecture', $prefectures[$prefecture_condition]);
+                    $posts->where('prefecture', $prefs[$prefecture_condition]);
                 }
                 //OR検索
                 elseif($search_condition == 2) {
-                    $posts->orWhere('prefecture', $prefectures[$prefecture_condition]);
+                    $posts->orWhere('prefecture', $prefs[$prefecture_condition]);
                 }
             }
             
@@ -264,15 +258,7 @@ class PostController extends Controller
     public function index(Post $post)
     {
         //都道府県配列(関東)
-        $prefectures = array(
-            '茨城県'    => '茨城県',
-            '栃木県'    => '栃木県',
-            '群馬県'      => '群馬県',
-            '埼玉県'    => '埼玉県',
-            '千葉県'      => '千葉県',
-            '東京都'      => '東京都',
-            '神奈川県'   => '神奈川県',
-            );
+        $prefs = config('pref');
             
         //ログイン状態を識別
         $user = Auth::user();
@@ -280,7 +266,7 @@ class PostController extends Controller
         return view('index')->with([
             'posts' => $post->getPaginateByLimit(),
             'user' => $user,
-            'prefectures' => $prefectures,
+            'prefectures' => $prefs,
             ]);
     }
     
@@ -288,7 +274,14 @@ class PostController extends Controller
     //特定IDのPost詳細画面表示
     public function show(Post $post)
     {
-        return view('show')->with(['post' => $post]);
+        $user = Auth::user();
+        $reviews = Review::with('post');
+        
+        return view('show')->with([
+            'reviews' => $reviews->orderBy('created_at', 'DESC')->paginate(10),
+            'user' => $user,
+            'post' => $post,
+            ]);
     }
     
     
@@ -296,17 +289,10 @@ class PostController extends Controller
     public function create()
     {
         //都道府県配列(関東)
-        $prefectures = array(
-            '茨城県'    => '茨城県',
-            '栃木県'    => '栃木県',
-            '群馬県'      => '群馬県',
-            '埼玉県'    => '埼玉県',
-            '千葉県'      => '千葉県',
-            '東京都'      => '東京都',
-            '神奈川県'   => '神奈川県',
-            );
+        $prefs = config('pref');
+        
         return view('create')->with([
-            'prefectures' => $prefectures,
+            'prefectures' => $prefs,
             ]);
     }
     
@@ -324,18 +310,11 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         //都道府県配列(関東)
-        $prefectures = array(
-            '茨城県'    => '茨城県',
-            '栃木県'    => '栃木県',
-            '群馬県'      => '群馬県',
-            '埼玉県'    => '埼玉県',
-            '千葉県'      => '千葉県',
-            '東京都'      => '東京都',
-            '神奈川県'   => '神奈川県',
-            );
+        $prefs = config('pref');
+        
         return view('edit')->with([
             'post' => $post,
-            'prefectures' => $prefectures,
+            'prefectures' => $prefs,
             ]);
     }
     
@@ -356,6 +335,5 @@ class PostController extends Controller
         $post->delete();
         return redirect($url);//検索結果にリダイレクト
     }
-    
     
 }

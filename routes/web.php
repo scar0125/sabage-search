@@ -19,7 +19,9 @@ Route::get('/result', 'PostController@search');
 
 //投稿詳細画面
 Route::get('/posts/{post}', 'PostController@show');
-
+//レビュー
+Route::post('/posts/{post}/review', 'ReviewController@store');
+Route::delete('/posts/{post}/review', 'ReviewController@delete')->name('review.delete');
 
 //投稿管理(管理者ログイン必須)
 Route::get('/create', 'PostController@create')->middleware('auth:admin');

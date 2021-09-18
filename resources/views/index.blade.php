@@ -11,7 +11,7 @@
             </p>
         @endif
         <h1>検索条件を入力</h1>
-        <form action="/result" method="GET">
+        <form action="/result" method="GET" style="margin-bottom: 1rem;">
             @csrf
     
         <div class="form-group">
@@ -97,6 +97,7 @@
         
         <!--投稿一覧画面仮表示-->
         <div class='posts'>
+            <h3>投稿一覧画面(仮)</h3>
             @foreach ($posts as $post)
                 <div class='post'>
                     <h2 class='name'>{{ $post->name }}</h2>

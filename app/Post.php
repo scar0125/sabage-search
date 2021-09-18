@@ -13,6 +13,11 @@ class Post extends Model
         'name', 'body', 'outdoor', 'indoor', 'rental', 'shuttle', 'prefecture', 'address', 'per_fee', 'charter_fee'
         ];
     
+    //リレーション:Review
+    public function reviews() {
+        return $this->hasMany('\App\Review');
+    }
+    
     //フィールド一覧ペジネーション
     public function getPaginateByLimit(int $limit_count = 10)
     {
