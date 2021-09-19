@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    //リレーション:Favorite
+    public function favorites() {
+        return $this->hasMany('\App\Favorite');
+    }
 }

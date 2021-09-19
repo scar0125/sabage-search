@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Favorite;
 use App\Review;
 use App\User;
 use App\Http\Requests\PostRequest;
@@ -11,6 +12,30 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    //ログイン時のみ有効：favorite, notFavoriteメソッド
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified'])->only(['favorite', 'notFavorite']);
+    }
+    
+    
+    //トップページの表示
+    public function index(Post $post)
+    {
+        //都道府県配列(関東)
+        $prefs = config('pref');
+            
+        //ログイン状態を識別
+        $user = Auth::user();
+        
+        return view('index')->with([
+            'posts' => $post->getPaginateByLimit(),
+            'user' => $user,
+            'prefectures' => $prefs,
+            ]);
+    }
+    
+    
     //検索機能・検索結果表示
     public function search(Request $request) {
         //検索条件の受け取り
@@ -254,24 +279,7 @@ class PostController extends Controller
     }
     
     
-    //トップページの表示
-    public function index(Post $post)
-    {
-        //都道府県配列(関東)
-        $prefs = config('pref');
-            
-        //ログイン状態を識別
-        $user = Auth::user();
-        
-        return view('index')->with([
-            'posts' => $post->getPaginateByLimit(),
-            'user' => $user,
-            'prefectures' => $prefs,
-            ]);
-    }
-    
-    
-    //特定IDのPost詳細画面表示
+    //詳細画面表示
     public function show(Post $post)
     {
         $user = Auth::user();
@@ -336,4 +344,33 @@ class PostController extends Controller
         return redirect($url);//検索結果にリダイレクト
     }
     
+    
+    //お気に入り追加
+    public function favorite($id)
+    {
+        //お気に入りの重複を回避
+        if(!empty(Favorite::where('post_id', $id)->where('user_id', Auth::id())->first()))
+        {
+            return redirect()->back();
+        }
+        else
+        {
+            Favorite::create([
+            'post_id' => $id,
+            'user_id' => Auth::id(),
+            ]);
+        
+            return redirect()->back();
+        }
+    }
+    
+    
+    //お気に入り削除
+    public function notFavorite($id)
+    {
+        $favorite = Favorite::where('post_id', $id)->where('user_id', Auth::id())->first();
+        $favorite->delete();
+        
+        return redirect()->back();
+    }
 }

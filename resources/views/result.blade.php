@@ -9,10 +9,19 @@
         @endif
         
         @if(isset($posts))
-        <div class="table">
         @foreach($posts as $post)
             <div class='post card'>
-                <h3 class='card-title'><a href="/posts/{{ $post->id }}" target="_blank" rel="noopener noreferrer">{{ $post->name }}</a></h3>
+                <h3 class='card-title' style="display: inline-block;"><a href="/posts/{{ $post->id }}" target="_blank" rel="noopener noreferrer">{{ $post->name }}</a></h3>
+                
+                <!-- お気に入り表示 -->
+                <div style="display: inline-block; margin-left: 0.2rem;">
+                    @if($post->is_favorited_by_auth_user())
+                    <a href="{{ route('post.not-favorite', ['id' => $post->id]) }}" class="btn btn-success btn-sm">お気に入り<span class="badge">{{ $post->favorites->count() }}</span></a>
+                    @else
+                    <a href="{{ route('post.favorite', ['id' => $post->id]) }}" class="btn btn-secondary btn-sm">お気に入り<span class="badge">{{ $post->favorites->count() }}</span></a>
+                    @endif
+                </div>
+                
                 <div class='card-body'>
                     <p class='per_fee'>一人あたりの最低料金：{{ $post->per_fee }}円</p>
                     <p class='charter_fee'>貸し切り最低料金：{{ $post->charter_fee }}円</p>
@@ -30,7 +39,6 @@
             </form>
             @endif
         @endforeach
-        </div>
         <div class='paginate'>
             {{ $posts->links() }}
         </div>

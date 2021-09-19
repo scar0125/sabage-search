@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Post;
+use App\Favorite;
+use App\Review;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +28,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = Auth::user();
+        $favorites = Favorite::with('post');
+        
+        return view('home')->with([
+            'favorites' => $favorites->orderBy('created_at', 'DESC')->paginate(10),
+            'user' => $user,
+            ]);
     }
 }

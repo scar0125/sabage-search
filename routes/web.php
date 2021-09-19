@@ -19,9 +19,14 @@ Route::get('/result', 'PostController@search');
 
 //投稿詳細画面
 Route::get('/posts/{post}', 'PostController@show');
+
 //レビュー
 Route::post('/posts/{post}/review', 'ReviewController@store');
 Route::delete('/posts/{post}/review', 'ReviewController@delete')->name('review.delete');
+
+//お気に入り
+Route::get('/posts/{id}/favorite', 'PostController@favorite')->name('post.favorite');
+Route::get('/posts/{id}/not-favorite', 'PostController@notFavorite')->name('post.not-favorite');
 
 //投稿管理(管理者ログイン必須)
 Route::get('/create', 'PostController@create')->middleware('auth:admin');
@@ -42,7 +47,6 @@ Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
 Route::post('/login/admin', 'Auth\LoginController@adminLogin');
 Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
 Route::view('/admin', 'admin')->middleware('auth:admin')->name('admin-home');
-
 
 
 //管理者ログインパスワードのリセット

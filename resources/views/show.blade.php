@@ -9,6 +9,15 @@
         <p class="edit">[<a href="/posts/{{ $post->id }}/edit">編集</a>]</p>
         @endif
         
+        <!-- お気に入り表示 -->
+        <div>
+            @if($post->is_favorited_by_auth_user())
+            <a href="{{ route('post.not-favorite', ['id' => $post->id]) }}" class="btn btn-success btn-sm">お気に入り<span class="badge">{{ $post->favorites->count() }}</span></a>
+            @else
+            <a href="{{ route('post.favorite', ['id' => $post->id]) }}" class="btn btn-secondary btn-sm">お気に入り<span class="badge">{{ $post->favorites->count() }}</span></a>
+            @endif
+        </div>
+        
         <div class="content">
             <div class="content__post">
                 <h3 class='name'>{{ $post->name }}</h3>
@@ -79,26 +88,28 @@
     <!-- レビュー表示 -->
     <div class="review" style="margin-top: 1rem;">
         @foreach ($reviews as $review)
-            @if($review->post->id == $post->id)
-                <article>
-                    <h5 style="display: inline-block;">{{ $review->user->name }}</h5>
-                    <p style="display: inline-block; margin-left: 0.2rem; color: #808080;"> {{ $review->created_at }}</p>
-                    <p>{{ $review->comment }}</p>
-                </article>
+            @if(!empty($review->post->id))
+                @if($review->post->id == $post->id)
+                    <article>
+                        <h5 style="display: inline-block;">{{ $review->user->name }}</h5>
+                        <p style="display: inline-block; margin-left: 0.2rem; color: #808080;"> {{ $review->created_at }}</p>
+                        <p>{{ $review->comment }}</p>
+                    </article>
                 
-                @if((Auth::check() && $review->user->id == $user->id) || Auth::guard('admin')->check())<!-- レビュー削除 -->
-                <form action="{{ route('review.delete', [ 'post' => $post->id ])}}" method="POST" onSubmit="return check()">
-                    @csrf
-                    @method('DELETE')
-                    <input type="hidden" name="id" value="{{ $review->id }}">
-                    <button type="submit" class="btn btn-secondary">削除</button>
-                </form>
+                    @if((Auth::check() && $review->user->id == $user->id) || Auth::guard('admin')->check())<!-- レビュー削除 -->
+                    <form action="{{ route('review.delete', [ 'post' => $post->id ])}}" method="POST" onSubmit="return check()">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="id" value="{{ $review->id }}">
+                        <button type="submit" class="btn btn-secondary">削除</button>
+                    </form>
+                    @endif
                 @endif
             @endif
-            <div class='paginate'>
-            {{ $reviews->links() }}
-            </div>
         @endforeach
+        <div class='paginate'>
+            {{ $reviews->links() }}
+        </div>
     </div>
         
 @endsection
