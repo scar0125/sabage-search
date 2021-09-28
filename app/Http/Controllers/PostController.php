@@ -24,13 +24,9 @@ class PostController extends Controller
     {
         //都道府県配列(関東)
         $prefs = config('pref');
-            
-        //ログイン状態を識別
-        $user = Auth::user();
         
         return view('index')->with([
             'posts' => $post->getPaginateByLimit(),
-            'user' => $user,
             'prefectures' => $prefs,
             ]);
     }
@@ -255,8 +251,8 @@ class PostController extends Controller
             //view表示
             if(!empty($posts)) {
                 $url = url()->full();//検索結果のurl取得
-                
                 $message = "検索が完了しました。";
+                
                 return view('result')->with([
                     'posts' => $posts->orderBy('updated_at', 'DESC')->paginate(10),
                     'message' => $message,
