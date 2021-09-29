@@ -186,7 +186,7 @@ function initMap() {
 </script>
 
 <!-- API 読み込み -->
-<script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA5V0hyjJi83lzwAm_HE41HuykhDiVjSOc&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key={{ config('services.key.api_key') }}&callback=initMap" async defer></script>
 
 <script>
     function check(){
