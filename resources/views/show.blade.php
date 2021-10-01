@@ -21,7 +21,10 @@
         <div class="content">
             <div class="content__post">
                 <h3 class='name'>{{ $post->name }}</h3>
-                <p class='body'>{{ $post->body }}</p>
+                @if ($post->image_path)
+                        <img style="height: 10rem;" src="https://sabage-search.s3-ap-northeast-1.amazonaws.com/{{ $post->image_path}}" >
+                @endif
+                <h5 class='body'>{{ $post->body }}</h5>
                 <p class='per_fee'>一人あたりの最低料金：{{ $post->per_fee }}円</p>
                 <p class='charter_fee'>貸し切り最低料金：{{ $post->charter_fee }}円</p>
                 <p class='indoor'>屋内：{{ $post->indoor }}</p>

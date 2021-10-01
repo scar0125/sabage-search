@@ -7,6 +7,7 @@ use App\Favorite;
 use App\Review;
 use App\User;
 use App\Http\Requests\PostRequest;
+use Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -305,6 +306,17 @@ class PostController extends Controller
     public function store(Post $post, PostRequest $request)
     {
         $input = $request['post'];
+        
+        if(!empty($request->file('image')))
+        {   //s3へアップロード
+            $image = $request->file('image');
+            // バケットの`myprefix`フォルダへアップロード
+            $path = Storage::disk('s3')->putFile('myprefix', $image, 'public');
+            // アップロードした画像のフルパスを取得
+            $post->image_path = $path;
+            //$post->image_path = Storage::disk('s3')->url($path);
+        }
+        
         $post->fill($input)->save();
         return redirect('/');
     }
@@ -327,6 +339,23 @@ class PostController extends Controller
     public function update(Post $post, PostRequest $request)
     {
         $input_post = $request['post'];
+        
+        if(!empty($request->file('image')))
+        {
+            //現在の画像がある場合は削除
+            if(!empty($post->image_path))
+            {
+                $pre_image = $post->image_path;
+                Storage::disk('s3')->delete($pre_image);
+            }
+            //s3へアップロード
+            $image = $request->file('image');
+            // バケットの`myprefix`フォルダへアップロード
+            $path = Storage::disk('s3')->putFile('myprefix', $image, 'public');
+            // アップロードした画像のフルパスを取得
+            $post->image_path = $path;
+        }
+        
         $post->fill($input_post)->save();
         return redirect('/posts/' . $post->id);
     }
@@ -336,6 +365,14 @@ class PostController extends Controller
     public function delete(Post $post, Request $request)
     {
         $url = $request->url;
+        
+        //現在の画像がある場合は削除
+        if(!empty($post->image_path))
+        {
+            $pre_image = $post->image_path;
+            Storage::disk('s3')->delete($pre_image);
+        }
+        
         $post->delete();
         return redirect($url);//検索結果にリダイレクト
     }

@@ -3,7 +3,7 @@
 @section('content')
     <h1 class="title">編集画面</h1>
     <div class="content">
-        <form action="/posts/{{ $post->id }}" method="POST">
+        <form action="/posts/{{ $post->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -108,6 +108,17 @@
                 <h2><label>住所</label></h2>
                 <input type="text" name="post[address]" placeholder="新宿区新宿0-0-0" value="{{ $post->address}}"/>
                 <p class="address__error" style="color:red">{{ $errors->first('post.address') }}</p>
+            </div>
+            
+            <div class="form-group">
+                <h2><label>画像</label></h2>
+                <p>現在の画像：</p>
+                @if ($post->image_path)
+                    <img style="display: block; margin-bottom: 1rem; height: 10rem;" src="https://sabage-search.s3-ap-northeast-1.amazonaws.com/{{ $post->image_path}}" >
+                @else
+                    <p>なし</p>
+                @endif
+                <input type="file" name="image"/>
             </div>
             
             <input type="submit" value="保存"/>

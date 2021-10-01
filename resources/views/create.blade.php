@@ -3,7 +3,7 @@
 @section('content')
     
         <h1>新規投稿作成</h1>
-        <form action="/" method="POST">
+        <form action="/" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group @if(!empty($errors->first('post.name'))) has-error @endif">
                 <h2><label>Name</label></h2>
@@ -75,6 +75,11 @@
                 <h2><label>住所</label></h2>
                 <input type="text" name="post[address]" placeholder="新宿区新宿0-0-0" value="{{ old('post.address') }}"/>
                 <p class="address__error" style="color:red">{{ $errors->first('post.address') }}</p>
+            </div>
+            
+            <div class="form-group">
+                <h2><label>画像</label></h2>
+                <input type="file" name="image"/>
             </div>
             
             <input type="submit" value="保存"/>

@@ -148,7 +148,7 @@ function initMap() {
                             createMarker(latlng[i],contents[i],map);
                             
                         } else { // 失敗した場合
-                            alert("一部の住所の取得に失敗しました。: " + status);
+                            console.log("一部の住所の取得に失敗しました。: " + status);
                         }
                         if (--cRef <= 0) {
                             callback();//全て取得できたらaftergeo実行

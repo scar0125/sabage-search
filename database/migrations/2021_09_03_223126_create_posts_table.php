@@ -23,6 +23,7 @@ class CreatePostsTable extends Migration
             $table->string('shuttle');
             $table->string('prefecture');
             $table->string('address');
+            $table->string('image_path')->nullable();
             
             $table->integer('per_fee');
             $table->integer('charter_fee');

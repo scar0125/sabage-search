@@ -11,7 +11,7 @@ class Post extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'name', 'body', 'outdoor', 'indoor', 'rental', 'shuttle', 'prefecture', 'address', 'per_fee', 'charter_fee'
+        'name', 'body', 'outdoor', 'indoor', 'rental', 'shuttle', 'prefecture', 'address', 'per_fee', 'charter_fee', 'image_path'
         ];
     
     //リレーション:Review
