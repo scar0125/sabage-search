@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    このページを閲覧するには、Eメールによる認証が必要です。
+                    Eメールによる認証が必要です。
                     <br>もし認証用のメールを受け取っていない場合、
                     <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                         @csrf

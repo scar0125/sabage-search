@@ -20,14 +20,6 @@ Route::get('/result', 'PostController@search');
 //投稿詳細画面
 Route::get('/posts/{post}', 'PostController@show');
 
-//レビュー
-Route::post('/posts/{post}/review', 'ReviewController@store');
-Route::delete('/posts/{post}/review', 'ReviewController@delete')->name('review.delete');
-
-//お気に入り
-Route::get('/posts/{id}/favorite', 'PostController@favorite')->name('post.favorite');
-Route::get('/posts/{id}/not-favorite', 'PostController@notFavorite')->name('post.not-favorite');
-
 //投稿管理(管理者ログイン必須)
 Route::get('/create', 'PostController@create')->middleware('auth:admin');
 Route::get('/posts/{post}/edit', 'PostController@edit')->middleware('auth:admin');
@@ -38,25 +30,35 @@ Route::post('/', 'PostController@store')->middleware('auth:admin');
 
 //ログイン
 Auth::routes(['verify' => true]);
+//ログイン:グーグルアカウント
+Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
+Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');
+//ログイン&メール認証が完了した場合のみ、実行できるRoute
 Route::middleware('verified')->group(function() {
-    //メール認証が完了した場合のみ、実行できるRoute
+    
+    //ホーム画面表示
     Route::get('/home', 'HomeController@index')->name('home');
+    
+    //お気に入り
+    Route::get('/posts/{id}/favorite', 'PostController@favorite')->name('post.favorite');
+    Route::get('/posts/{id}/not-favorite', 'PostController@notFavorite')->name('post.not-favorite');
+    
+    //レビュー
+    Route::post('/posts/{post}/review', 'ReviewController@store');
+    Route::delete('/posts/{post}/review', 'ReviewController@delete')->name('review.delete');
+    
 });
 
 
-//グーグルログイン
-Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
-Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');
-
 //管理者ログイン
 Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
-//Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm'); //管理者登録画面非表示
 Route::post('/login/admin', 'Auth\LoginController@adminLogin');
-//Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
 Route::view('/admin', 'admin')->middleware('auth:admin')->name('admin-home');
+//管理者登録画面非表示
+//Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
+//Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
 
-
-//管理者ログインパスワードのリセット
+//管理者ログイン:パスワードリセット
 Route::get('password/admin/reset', 'Auth\AdminForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
 Route::post('password/admin/email', 'Auth\AdminForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
 Route::get('password/admin/reset/{token}', 'Auth\AdminResetPasswordController@showResetForm')->name('admin.password.reset');
