@@ -14,6 +14,12 @@
                     <form method="POST" action="{{ route('register') }}">
                     @endisset
                         @csrf
+                        
+                        <div class="col-md-8">
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary" role="button">
+                                テストログイン
+                            </a>
+                        </div>
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>

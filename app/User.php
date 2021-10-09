@@ -38,7 +38,8 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     
     //リレーション:Favorite
-    public function favorites() {
+    public function favorites()
+    {
         return $this->hasMany('\App\Favorite');
     }
 }

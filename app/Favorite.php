@@ -11,12 +11,14 @@ class Favorite extends Model
         ];
     
     //リレーション：Post
-    public function post() {
+    public function post()
+    {
         return $this->belongsTo('\App\Post');
     }
     
     //リレーション：User
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('\App\User');
     }
     

@@ -14,6 +14,12 @@
                     <form method="POST" action="{{ route('login') }}">
                     @endisset
                         @csrf
+                        <p>
+                            テストログイン<br>
+                            メールアドレス：test@sabage<br>
+                            パスワード：sabage2021<br>
+                            ※レビュー、お気に入り機能が使用できます。ご自由にお試しください。
+                        </p>
 
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>

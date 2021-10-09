@@ -84,6 +84,12 @@
             </form>
         </div>
         
+        <p style="text-align: center;">
+            例：都道府県に「東京都」を選択<br>
+            ↓<br>
+            検索ボタンをクリック
+        </p>
+        
         @if (Auth::guard('admin')->check())
         <div style="text-align: center;">
             <p class="create btn btn-outline-primary"><a href='/create'>投稿作成</a></p>

@@ -29,6 +29,7 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
+        //お気に入りしたフィールドを表示
         $favorites = Favorite::with('post');
         
         return view('home')->with([
