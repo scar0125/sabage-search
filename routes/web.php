@@ -37,8 +37,12 @@ Route::post('/', 'PostController@store')->middleware('auth:admin');
 
 
 //ログイン
-Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes(['verify' => true]);
+Route::middleware('verified')->group(function() {
+    //メール認証が完了した場合のみ、実行できるRoute
+    Route::get('/home', 'HomeController@index')->name('home');
+});
+
 
 //グーグルログイン
 Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
