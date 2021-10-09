@@ -40,12 +40,15 @@ Route::post('/', 'PostController@store')->middleware('auth:admin');
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
+//グーグルログイン
+Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
+Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');
 
 //管理者ログイン
 Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
-Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
+//Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm'); //管理者登録画面非表示
 Route::post('/login/admin', 'Auth\LoginController@adminLogin');
-Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
+//Route::post('/register/admin', 'Auth\RegisterController@createAdmin')->name('admin-register');
 Route::view('/admin', 'admin')->middleware('auth:admin')->name('admin-home');
 
 

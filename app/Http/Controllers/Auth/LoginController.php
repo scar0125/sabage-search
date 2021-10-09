@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\User;
+use Socialite;
 
 //管理ログイン用
 use Illuminate\Http\Request;
@@ -43,7 +45,41 @@ class LoginController extends Controller
         $this->middleware('guest:admin')->except('logout');
     }
     
-    //管理ログイン
+    //グーグルログイン
+    public function redirectToGoogle()
+    {
+        // Google へのリダイレクト
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        $gUser = Socialite::driver('google')->stateless()->user();
+        
+        // email が合致するユーザーを取得
+        $user = User::where('email', $gUser->email)->first();
+        
+        // 見つからなければ新しくユーザーを作成
+        if ($user == null) {
+            $user = $this->createUserByGoogle($gUser);
+        }
+        
+        // ログイン処理
+        \Auth::login($user, true);
+        return redirect('/home');
+    }
+    
+    public function createUserByGoogle($gUser)
+    {
+        $user = User::create([
+            'name'     => $gUser->name,
+            'email'    => $gUser->email,
+            'password' => \Hash::make(uniqid()),
+        ]);
+        return $user;
+    }
+    
+    //管理者ログイン
     public function showAdminLoginForm()
     {
         return view('auth.login', ['authgroup' => 'admin']);
@@ -66,7 +102,7 @@ class LoginController extends Controller
     //ログイン後のリダイレクト先
     public function redirectPath()
     {
-        return '/';
+        return '/home';
     }
     
 }
