@@ -14,7 +14,7 @@ class AdminsTableSeeder extends Seeder
     {
         $param = [
             'name' => 'admin',
-            'email' => 'admin@admin',
+            'email' => 'sabage.search@gmail.com',
             'password' => bcrypt('adminadmin'),
             ];
         DB::table('admins')->insert($param);
