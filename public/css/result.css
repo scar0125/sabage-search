@@ -15,8 +15,8 @@
 
 .main-content {
 	 padding: 0;
-	 position: absolute;
 	 top: 23.7%;
+	 position: absolute;
 }
 
 .card-title {
@@ -32,9 +32,9 @@
 	height: 77%;
 	width: 100%;
 	padding: 0;
-	position: fixed;
 	top: 23%;
 	left: 50%;
+	position: fixed;
 }
 
 @media screen and (max-width: 1120px) {

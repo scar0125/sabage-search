@@ -61,6 +61,9 @@
             
             </div>
         @endforeach
+            <div class='paginate'>
+                {{$posts->appends(request()->query())->links()}}
+            </div>
         </div>
         
         <!-- 地図表示 -->
@@ -68,9 +71,6 @@
             <div id="map"></div>
         </div>
         
-        <div class='paginate'>
-            {{ $posts->links() }}
-        </div>
         @endif
     </div>
 
