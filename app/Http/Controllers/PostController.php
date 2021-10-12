@@ -255,7 +255,7 @@ class PostController extends Controller
                 $message = "検索が完了しました。";
                 
                 return view('result')->with([
-                    'posts' => $posts->orderBy('updated_at', 'DESC')->paginate(10),
+                    'posts' => $posts->orderBy('updated_at', 'DESC')->paginate(5),
                     'message' => $message,
                     'url' => $url,
                 ]);
